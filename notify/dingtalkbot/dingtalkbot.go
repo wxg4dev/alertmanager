@@ -64,14 +64,14 @@ func New(conf *config.DingTalkBotConfig, t *template.Template, l log.Logger, htt
 }
 
 type DingTalkMessage struct {
-	Alerts string `json:"text"`
+	Alerts string `json:"content"`
 }
 
 // Message defines the JSON object send to webhook endpoints.
 type Message struct {
 	// The protocol version.
 	MsgType         string          `json:"msgtype"`
-	Content         DingTalkMessage `json:"content"`
+	Content         DingTalkMessage `json:"text"`
 	Version         string          `json:"version"`
 	GroupKey        string          `json:"groupKey"`
 	TruncatedAlerts uint64          `json:"truncatedAlerts"`
