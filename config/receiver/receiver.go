@@ -20,6 +20,7 @@ import (
 
 	"github.com/prometheus/alertmanager/config"
 	"github.com/prometheus/alertmanager/notify"
+	"github.com/prometheus/alertmanager/notify/dingtalkbot"
 	"github.com/prometheus/alertmanager/notify/discord"
 	"github.com/prometheus/alertmanager/notify/email"
 	"github.com/prometheus/alertmanager/notify/feishubot"
@@ -59,6 +60,9 @@ func BuildReceiverIntegrations(nc config.Receiver, tmpl *template.Template, logg
 	}
 	for i, c := range nc.FeiShuBotConfigs {
 		add("feishubot", i, c, func(l log.Logger) (notify.Notifier, error) { return feishubot.New(c, tmpl, l, httpOpts...) })
+	}
+	for i, c := range nc.DingTalkBotConfigs {
+		add("dingtalkbot", i, c, func(l log.Logger) (notify.Notifier, error) { return dingtalkbot.New(c, tmpl, l, httpOpts...) })
 	}
 	for i, c := range nc.EmailConfigs {
 		add("email", i, c, func(l log.Logger) (notify.Notifier, error) { return email.New(c, tmpl, l), nil })

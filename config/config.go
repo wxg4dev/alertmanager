@@ -243,6 +243,9 @@ func resolveFilepaths(baseDir string, cfg *Config) {
 		for _, cfg := range receiver.FeiShuBotConfigs {
 			cfg.HTTPConfig.SetDirectory(baseDir)
 		}
+		for _, cfg := range receiver.DingTalkBotConfigs {
+			cfg.HTTPConfig.SetDirectory(baseDir)
+		}
 		for _, cfg := range receiver.WechatConfigs {
 			cfg.HTTPConfig.SetDirectory(baseDir)
 		}
@@ -368,6 +371,11 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 		}
 		for _, wh := range rcv.FeiShuBotConfigs {
+			if wh.HTTPConfig == nil {
+				wh.HTTPConfig = c.Global.HTTPConfig
+			}
+		}
+		for _, wh := range rcv.DingTalkBotConfigs {
 			if wh.HTTPConfig == nil {
 				wh.HTTPConfig = c.Global.HTTPConfig
 			}
@@ -904,20 +912,21 @@ type Receiver struct {
 	// A unique identifier for this receiver.
 	Name string `yaml:"name" json:"name"`
 
-	DiscordConfigs   []*DiscordConfig   `yaml:"discord_configs,omitempty" json:"discord_configs,omitempty"`
-	EmailConfigs     []*EmailConfig     `yaml:"email_configs,omitempty" json:"email_configs,omitempty"`
-	PagerdutyConfigs []*PagerdutyConfig `yaml:"pagerduty_configs,omitempty" json:"pagerduty_configs,omitempty"`
-	SlackConfigs     []*SlackConfig     `yaml:"slack_configs,omitempty" json:"slack_configs,omitempty"`
-	WebhookConfigs   []*WebhookConfig   `yaml:"webhook_configs,omitempty" json:"webhook_configs,omitempty"`
-	FeiShuBotConfigs []*FeiShuBotConfig `yaml:"feishubot_configs,omitempty" json:"feishubot_configs,omitempty"`
-	OpsGenieConfigs  []*OpsGenieConfig  `yaml:"opsgenie_configs,omitempty" json:"opsgenie_configs,omitempty"`
-	WechatConfigs    []*WechatConfig    `yaml:"wechat_configs,omitempty" json:"wechat_configs,omitempty"`
-	PushoverConfigs  []*PushoverConfig  `yaml:"pushover_configs,omitempty" json:"pushover_configs,omitempty"`
-	VictorOpsConfigs []*VictorOpsConfig `yaml:"victorops_configs,omitempty" json:"victorops_configs,omitempty"`
-	SNSConfigs       []*SNSConfig       `yaml:"sns_configs,omitempty" json:"sns_configs,omitempty"`
-	TelegramConfigs  []*TelegramConfig  `yaml:"telegram_configs,omitempty" json:"telegram_configs,omitempty"`
-	WebexConfigs     []*WebexConfig     `yaml:"webex_configs,omitempty" json:"webex_configs,omitempty"`
-	MSTeamsConfigs   []*MSTeamsConfig   `yaml:"msteams_configs,omitempty" json:"msteams_configs,omitempty"`
+	DiscordConfigs     []*DiscordConfig     `yaml:"discord_configs,omitempty" json:"discord_configs,omitempty"`
+	EmailConfigs       []*EmailConfig       `yaml:"email_configs,omitempty" json:"email_configs,omitempty"`
+	PagerdutyConfigs   []*PagerdutyConfig   `yaml:"pagerduty_configs,omitempty" json:"pagerduty_configs,omitempty"`
+	SlackConfigs       []*SlackConfig       `yaml:"slack_configs,omitempty" json:"slack_configs,omitempty"`
+	WebhookConfigs     []*WebhookConfig     `yaml:"webhook_configs,omitempty" json:"webhook_configs,omitempty"`
+	FeiShuBotConfigs   []*FeiShuBotConfig   `yaml:"feishubot_configs,omitempty" json:"feishubot_configs,omitempty"`
+	DingTalkBotConfigs []*DingTalkBotConfig `yaml:"dingtalkbot_configs,omitempty" json:"dingtalkbot_configs,omitempty"`
+	OpsGenieConfigs    []*OpsGenieConfig    `yaml:"opsgenie_configs,omitempty" json:"opsgenie_configs,omitempty"`
+	WechatConfigs      []*WechatConfig      `yaml:"wechat_configs,omitempty" json:"wechat_configs,omitempty"`
+	PushoverConfigs    []*PushoverConfig    `yaml:"pushover_configs,omitempty" json:"pushover_configs,omitempty"`
+	VictorOpsConfigs   []*VictorOpsConfig   `yaml:"victorops_configs,omitempty" json:"victorops_configs,omitempty"`
+	SNSConfigs         []*SNSConfig         `yaml:"sns_configs,omitempty" json:"sns_configs,omitempty"`
+	TelegramConfigs    []*TelegramConfig    `yaml:"telegram_configs,omitempty" json:"telegram_configs,omitempty"`
+	WebexConfigs       []*WebexConfig       `yaml:"webex_configs,omitempty" json:"webex_configs,omitempty"`
+	MSTeamsConfigs     []*MSTeamsConfig     `yaml:"msteams_configs,omitempty" json:"msteams_configs,omitempty"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface for Receiver.

@@ -39,6 +39,12 @@ var (
 		},
 	}
 
+	DefaultDingTalkBotConfig = DingTalkBotConfig{
+		NotifierConfig: NotifierConfig{
+			VSendResolved: true,
+		},
+	}
+
 	// DefaultWebexConfig defines default values for Webex configurations.
 	DefaultWebexConfig = WebexConfig{
 		NotifierConfig: NotifierConfig{
@@ -527,10 +533,40 @@ type FeiShuBotConfig struct {
 	MaxAlerts uint64 `yaml:"max_alerts" json:"max_alerts"`
 }
 
+type DingTalkBotConfig struct {
+	NotifierConfig `yaml:",inline" json:",inline"`
+
+	HTTPConfig *commoncfg.HTTPClientConfig `yaml:"http_config,omitempty" json:"http_config,omitempty"`
+
+	// URL to send POST request to.
+	URL     *SecretURL `yaml:"url" json:"url"`
+	URLFile string     `yaml:"url_file" json:"url_file"`
+
+	// MaxAlerts is the maximum number of alerts to be sent per webhook message.
+	// Alerts exceeding this threshold will be truncated. Setting this to 0
+	// allows an unlimited number of alerts.
+	MaxAlerts uint64 `yaml:"max_alerts" json:"max_alerts"`
+}
+
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
 func (c *FeiShuBotConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*c = DefaultFeiShuBotConfig
 	type plain FeiShuBotConfig
+	if err := unmarshal((*plain)(c)); err != nil {
+		return err
+	}
+	if c.URL == nil && c.URLFile == "" {
+		return fmt.Errorf("one of url or url_file must be configured")
+	}
+	if c.URL != nil && c.URLFile != "" {
+		return fmt.Errorf("at most one of url & url_file must be configured")
+	}
+	return nil
+}
+
+func (c *DingTalkBotConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	*c = DefaultDingTalkBotConfig
+	type plain DingTalkBotConfig
 	if err := unmarshal((*plain)(c)); err != nil {
 		return err
 	}

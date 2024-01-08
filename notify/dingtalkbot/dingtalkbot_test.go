@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package feishubot
+package dingtalkbot
 
 import (
 	"bytes"
@@ -31,13 +31,13 @@ import (
 	"github.com/prometheus/alertmanager/types"
 )
 
-func TestFeiShubotRetry(t *testing.T) {
-	u, err := url.Parse("https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxx")
+func TestDingTalkbotRetry(t *testing.T) {
+	u, err := url.Parse("https://open.dingtalk.cn/open-apis/bot/v2/hook/xxxxxx")
 	if err != nil {
 		require.NoError(t, err)
 	}
 	notifier, err := New(
-		&config.FeiShuBotConfig{
+		&config.DingTalkBotConfig{
 			URL:        &config.SecretURL{URL: u},
 			HTTPConfig: &commoncfg.HTTPClientConfig{},
 		},
@@ -84,7 +84,7 @@ func TestFeiShubotRetry(t *testing.T) {
 	})
 }
 
-func TestFeiShubotTruncateAlerts(t *testing.T) {
+func TestDingTalkbotTruncateAlerts(t *testing.T) {
 	alerts := make([]*types.Alert, 10)
 
 	truncatedAlerts, numTruncated := truncateAlerts(0, alerts)
@@ -100,13 +100,13 @@ func TestFeiShubotTruncateAlerts(t *testing.T) {
 	require.EqualValues(t, numTruncated, 0)
 }
 
-func TestFeiShubotRedactedURL(t *testing.T) {
+func TestDingTalkbotRedactedURL(t *testing.T) {
 	ctx, u, fn := test.GetContextWithCancelingURL()
 	defer fn()
 
 	secret := "secret"
 	notifier, err := New(
-		&config.FeiShuBotConfig{
+		&config.DingTalkBotConfig{
 			URL:        &config.SecretURL{URL: u},
 			HTTPConfig: &commoncfg.HTTPClientConfig{},
 		},
@@ -118,7 +118,7 @@ func TestFeiShubotRedactedURL(t *testing.T) {
 	test.AssertNotifyLeaksNoSecret(ctx, t, notifier, secret)
 }
 
-func TestFeiShubotReadingURLFromFile(t *testing.T) {
+func TestDingTalkbotReadingURLFromFile(t *testing.T) {
 	ctx, u, fn := test.GetContextWithCancelingURL()
 	defer fn()
 
@@ -128,7 +128,7 @@ func TestFeiShubotReadingURLFromFile(t *testing.T) {
 	require.NoError(t, err, "writing to temp file failed")
 
 	notifier, err := New(
-		&config.FeiShuBotConfig{
+		&config.DingTalkBotConfig{
 			URLFile:    f.Name(),
 			HTTPConfig: &commoncfg.HTTPClientConfig{},
 		},
